@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import TodoForm from './components/TodoForm';
+import TodoList from './components/TodoList';
+import TodoFilter from './components/TodoFilter';
 
 function App() {
+  const [todos, setTodos] = useState([]);
+  const [filter, setFilter] = useState('all');
+
+  const addTodo = (todo) => {
+    setTodos([...todos, todo]);
+  };
+
+  const updateTodo = (updatedTodo) => {
+    setTodos(todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo)));
+  };
+
+  const deleteTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === 'all') return true;
+    return todo.status === filter;
+  });
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>My Todo App</h1>
+      <TodoForm addTodo={addTodo} />
+      <TodoFilter filter={filter} setFilter={setFilter} />
+      <TodoList todos={filteredTodos} updateTodo={updateTodo} deleteTodo={deleteTodo} />
     </div>
   );
 }
